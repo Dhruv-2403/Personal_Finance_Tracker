@@ -1,19 +1,9 @@
 const { PrismaClient } = require('@prisma/client');
+const { PrismaPg } = require('@prisma/adapter-pg');
+const { Pool } = require('pg');
 
-const prisma = new PrismaClient({
-  adapter: process.env.DATABASE_URL,
-});
-
-async function testConnection() {
-    try {
-        await prisma.$connect();
-        console.log('Connected to PostgreSQL database via Prisma');
-    } catch (error) {
-        console.error('Failed to connect to database:', error);
-        process.exit(1);
-    }
-}
-
-testConnection();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 module.exports = prisma;
