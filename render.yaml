@@ -3,8 +3,8 @@ services:
     name: personal-finance-tracker
     runtime: node
     plan: free
-    buildCommand: cd backend && npm install && npx prisma generate
-    startCommand: cd backend && npm start
+    buildCommand: npm install --prefix backend && npx --prefix backend prisma generate
+    startCommand: node backend/server.js
     envVars:
       - key: NODE_ENV
         value: production
