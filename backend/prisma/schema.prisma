@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model IncomeSource {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  transactions Transaction[]
+
+  @@map("income_sources")
+}
+
+model ExpenseCategory {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  transactions Transaction[]
+
+  @@map("expense_categories")
+}
+
+model Transaction {
+  id                  Int             @id @default(autoincrement())
+  type                String
+  amount              Decimal         @db.Decimal(10, 2)
+  description         String?
+  date                DateTime        @db.Date
+  incomeSourceId      Int?            @map("income_source_id")
+  expenseCategoryId   Int?            @map("expense_category_id")
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @default(now()) @updatedAt @map("updated_at")
+  
+  incomeSource        IncomeSource?   @relation(fields: [incomeSourceId], references: [id], onDelete: SetNull)
+  expenseCategory     ExpenseCategory? @relation(fields: [expenseCategoryId], references: [id], onDelete: SetNull)
+
+  @@map("transactions")
+}
